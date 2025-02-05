@@ -54,11 +54,11 @@ main (int argc, char **argv)
 
 #ifdef CONFIG_APP_USER_PROC
 
-    pid_t ping_pid, ding_pid, pong_pid; //hello_pid
+    pid_t ping_pid, ding_pid, pong_pid, hello_pid;
     unsigned int aliceq = 100;
     unsigned int bobq = 50;
     unsigned int hackerq = 22;
-    //unsigned int helloq = 50;
+    unsigned int helloq = 50;
     printf ("USER\n");
 
     if ((ping_pid = spawn (3,aliceq)) != NUM_PROC)
@@ -76,10 +76,10 @@ main (int argc, char **argv)
     else
         printf ("Failed to launch ding.\n");
 
-    //if ((hello_pid = spawn(8,helloq)) != NUM_PROC)
-      //printf ("Hello in process %d with %d quota (including some pages reserved for kernel use only).\n", hello_pid, helloq);
-    //else
-	//printf ("Failed to launch hello.\n");
+    if ((hello_pid = spawn(8,helloq)) != NUM_PROC)
+      printf ("Hello in process %d with %d quota (including some pages reserved for kernel use only).\n", hello_pid, helloq);
+    else
+	printf ("Failed to launch hello.\n");
 
 #endif
 
