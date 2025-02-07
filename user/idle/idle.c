@@ -54,25 +54,25 @@ main (int argc, char **argv)
 
 #ifdef CONFIG_APP_USER_PROC
 
-    pid_t ping_pid, ding_pid, pong_pid, hello_pid;
-    unsigned int aliceq = 100;
-    unsigned int bobq = 50;
-    unsigned int hackerq = 22;
+    pid_t admin_pid, user_pid, guest_pid, hello_pid;
+    unsigned int adminq = 100;
+    unsigned int userq = 50;
+    unsigned int guestq = 22;
     unsigned int helloq = 50;
     printf ("USER\n");
 
-    if ((ping_pid = spawn (3,aliceq)) != NUM_PROC)
-      printf ("Alice in process %d with %d quota (including some pages reserved for kernel use only).\n", ping_pid, aliceq);
+    if ((admin_pid = spawn (3,adminq)) != NUM_PROC)
+      printf ("Admin in process %d with %d quota (including some pages reserved for kernel use only).\n", admin_pid, adminq);
     else
-        printf ("Failed to launch ping.\n");
+        printf ("Failed to launch admin.\n");
 
-    if ((pong_pid = spawn (4,hackerq)) != NUM_PROC)
-      printf ("Hacker in process %d with %d quota (including some pages reserved for kernel use only).\n", pong_pid, hackerq);
+    if ((guest_pid = spawn (4,guestq)) != NUM_PROC)
+      printf ("Hacker in process %d with %d quota (including some pages reserved for kernel use only).\n", guest_pid, guestq);
     else
-        printf ("Failed to launch pong.\n");
+        printf ("Failed to launch guest.\n");
 
-    if ((ding_pid = spawn (5,bobq)) != NUM_PROC)
-      printf ("Bob in process %d with %d quota (including some pages reserved for kernel use only).\n", ding_pid, bobq);
+    if ((user_pid = spawn (5,userq)) != NUM_PROC)
+      printf ("User in process %d with %d quota (including some pages reserved for kernel use only).\n", user_pid, userq);
     else
         printf ("Failed to launch ding.\n");
 
