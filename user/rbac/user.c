@@ -1,52 +1,75 @@
 // USER - READ, EXECUTE
 
 #include <stdio.h>
-//#include <fcntl.h>
-//#include <unistd.h>
-#include <string.h>
+//#include <string.h>
 #include <syscall.h>
-#include "permissions.h"
+#include "roles.h"
+
+#define BUF_SIZE 51
+#define VM_ID 1
+#define TARGET_PROCESS 2
+
+void execute_syscalls(const char* username);
 
 int
 main (int argc, char **argv)
 {
-	const char *username = "user";
-	//char *filename = "secure_data.txt";
-	//char *exec_file = "./test_exec";
+	printf("[Process] Running Process-Level System Calls...\n");
 
-	//READ TEST
-	printf("\nUser trying to READ...\n");
-	if (check_permission(username, USER_R)) {
-		const char *m1 = "User: Access to READ files\n";
-		sys_puts(m1, strlen(m1));
-	} else {
-		const char *m2 = "Access denied for User to READ\n";
-		sys_puts(m2, strlen(m2));
+	//ektelesi gia "user1"
+	execute_syscalls("user1");
+
+	printf("[Process] Yielding CPU to next process...\n");
+	while (1) {
+		yield(); //allagi diergasias
 	}
-
-	//WRITE TEST
-	printf("User trying to WRITE...\n");
-	if (check_permission(username, USER_W)) {
-		const char *m3 = "User: Access to WRITE files\n";
-		sys_puts(m3, strlen(m3));
-	} else {
-		const char *m4 = "Access denied for User to WRITE\n";
-		sys_puts(m4, strlen(m4));
-	}
-
-	//EXEC TEST
-	printf("User trying to EXECUTE...\n");
-	if (check_permission(username, USER_X)) {
-		//execl(exec_file, exec_file, NULL);
-		uint32_t elf_id = 4;
-    		uint32_t quota = 10;
-		sys_spawn(elf_id, quota);
-		const char *m5 = "User: Access to EXECUTE spawn\n";
-		puts(m5, strlen(m5));
-	} else {
-		const char *m6 = "Access denied for User to EXECUTE spawn\n";
-		puts(m6, strlen(m6));
-	}
-
+	
 	return 0;
+}
+
+void execute_syscalls(const char* username) {
+	User* user = find_user(username);
+	if (!user) {
+		printf("[-] User %s not found!\n", username);
+		return;
+	}
+
+	printf("[*] User: %s (Role: %d)\n", user->username, user->role);
+	unsigned int buf[BUF_SIZE];
+
+	//sys_disk_op
+	if (can_execute(user->role, "sys_disk_op")) {
+		printf("[+] Permission for sys_disk_op\n");
+		int err = sys_disk_read(0, 1, buf);
+		if (err) printf("[-] Disk read failed!\n");
+		else printf("[+] Disk read successful.\n");
+		log_action(user->username, "sys_disk_op", err == 0);
+	} else {
+		printf("[-] No permission for sys_disk_op!\n");
+		log_action(user->username, "sys_disk_op", 0);
+	}
+
+	//sys_send
+	if (can_execute(user->role, "sys_send")) {
+		printf("[+] Permission for sys_send\n");
+		int err = sys_send(TARGET_PROCESS, (unsigned int)buf, BUF_SIZE);
+		if (err) printf("[-] Message sending failed!\n");
+		else printf("[+] Message sent successfully.\n");
+		log_action(user->username, "sys_send", err == 0);
+	} else {
+		printf("[-] No permission for sys_send!\n");
+		log_action(user->username, "sys_send", 0);
+	}
+
+	//sys_hvm_run_vm
+	if (can_execute(user->role, "sys_hvm_run_vm")) {
+		printf("[+] Permission for sys_hvn_run_vm\n");
+		int err = sys_hvm_run_vm(VM_ID);
+		if (err) printf("[-] VM Start failed!\n");
+		else printf("[+] VM Started successfully.\n");
+		log_action(user->username, "sys_hvm_run_vm", err == 0);
+	} else {
+		printf("[-] No permission for sys_hvm_run_vm!\n");
+		log_action(user->username, "sys_hvm_run_vm", 0);
+	}
 }

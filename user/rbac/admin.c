@@ -1,65 +1,66 @@
 // ADMIN - READ, WRITE, EXECUTE
 
+#include <stdlib.h>
 #include <stdio.h>
-//#include <fcntl.h>
-//#include <unistd.h>
 #include <string.h>
 #include <syscall.h>
-#include "permissions.h"
+#include "roles.h"
+
+
+User user_list[MAX_USERS]; //statikos pinakas xristwn
+int user_count = 0;
+
+//prosthiki xristwn
+int add_user(const char* username, int role) {
+	if (user_count >= MAX_USERS) return -1; //an i lista einai gemati
+
+	strncpy(user_list[user_count].username, username, 16);
+	user_list[user_count].role = role;
+	user_count++;
+
+	return 0;
+}
+
+//evresi xristwn
+User* find_user(const char* username) {
+	int i = 0;
+	for (i=0; i<user_count; i++) {
+		if (strcmp(user_list[i].username, username) == 0) {
+			return &user_list[i];
+		}
+	}
+	return NULL; //den vrethike
+}
+
+//emfanisi xristwn
+void print_users() {
+	printf("=== Registered Users ===\n");
+	int i = 0;
+	for (i=0; i<user_count; i++) {
+		printf("User: %s, Role: %d\n", user_list[i].username, user_list[i].role);
+	}
+}
+
+
 
 int
 main (int argc, char **argv)
 {
-	const char *username = "admin";
-	//char *filename = "secure_data.txt";
-	//char *exec_file = "./test_exec";
+	printf("[User Management] Initializing...\n");
 
-	//READ TEST
-	printf("\n\nAdmin trying to READ...\n");
-	if (check_permission(username, ADMIN_R)) {
-		const char *m1 = "Admin: Access to READ files.\n";
-		sys_puts(m1, strlen(m1));
-		//int fd = open(filename, O_RDONLY);
-		//if (fd>=0) {
-		//	char buffer[100];
-		//	read(fd, buffer, sizeof(buffer));
-		//	close(fd);
-		//	printf("Admin successfully READ secure_data.txt: %s\n", buffer);
-		//} else {
-		//	printf("Error opening secure_data.txt\n");
-	} else {
-		const char *m2 = "Access denied for Admin to READ\n";
-		sys_puts(m2, strlen(m2));
-	}
+	//prosthiki kapoiwn xristwn (xeirokinita)
+	add_user("admin", ROLE_ADMIN);
+	add_user("user1", ROLE_USER);
+	add_user("guest1", ROLE_GUEST);
 
-	//WRITE TEST
-	printf("Admin trying to WRITE...\n");
-	if (check_permission(username, ADMIN_W)) {
-		const char *m3 = "Admin: Access to WRITE files.\n";
-		sys_puts(m3, strlen(m3));
-	} else {
-		const char *m4 = "Access denied for Admin to WRITE\n";
-		sys_puts(m4, strlen(m4));
-	}
+	print_users();
 
-	//EXEC TEST
-	printf("Admin trying to EXECUTE...\n");
-	if (check_permission(username, ADMIN_X)) {
-		//execl(exec_file, exec_file, NULL);
-		uint32_t elf_id = 4;
-    		uint32_t quota = 10;
-		sys_spawn(elf_id, quota);
-		const char *m5 = "Admin access to EXECUTE spawn\n";
-		sys_puts(m5, strlen(m5));
-	} else {
-		const char *m6 = "Access denied for Admin to EXECUTE spawn\n";
-		sys_puts(m6, strlen(m6));
-	}
-
-	//yield to guest
+	printf("[User Management] Yielding CPU to next process...\n");
+		
 	while (1) {
-		yield();
+		yield(); //allagi diergasias
 	}
 
 	return 0;
 }
+

@@ -1,57 +1,65 @@
 // GUEST - READ only
 
 #include <stdio.h>
-//#include <fcntl.h>
-//#include <unistd.h>
 #include <string.h>
 #include <syscall.h>
-#include "permissions.h"
+#include "roles.h"
+
+#define LOG_SIZE 10
+#define ROLE_ADMIN 0
+#define ROLE_USER 1
+#define ROLE_GUEST 2
+
+LogEntry logs[LOG_SIZE];
+int log_index = 0;
+
+typedef struct {
+	int role;
+	char* actions[3];
+} RolePermission;
+
+RolePermission role_permissions[] = {
+	{ ROLE_ADMIN, {"sys_disk_op", "sys_send", "sys_hvm_run_vm" } },
+	{ ROLE_USER,  {"sys_disk_op", "sys_send", NULL } },
+	{ ROLE_GUEST, {"sys_disk_op", NULL, NULL } }
+};
+
+//elegxei an o xristis exei adeia na ektelesei mia energeia
+int can_execute(int role, const char* action) {
+	int i=0;
+	for (i=0; i<3; i++) {
+		if (role_permissions[role].actions[i] && strcmp(role_permissions[role].actions[i], action) ==0) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+//katagrafi energeias sto log
+void log_action(const char* username, const char* action, int success) {
+	log_index = (log_index + 1) % LOG_SIZE;
+	strncpy(logs[log_index].username, username, 16);
+	strncpy(logs[log_index].action, action, 16);
+	logs[log_index].success = success;
+	printf("[LOG] User: %s, Action: %s, Success: %d\n", username, action, success);
+}
 
 int
 main (int argc, char **argv)
 {
-	char *username = "guest";
-	//char *filename = "secure_data.txt";
-	//char *exec_file = "./test_exec";
+	printf("[RBAC] Running Access Control Checks...\n");
 
-	//READ TEST
-	printf("\nGuest trying to READ...\n");
-	if (check_permission(username, GUEST_R)) {
-		const char *m1 = "Guest: Access to READ files\n";
-		sys_puts(m1, strlen(m1));
-	} else {
-		const char *m2 = "Access denied for Guest to READ\n";
-		sys_puts(m2, strlen(m2));
-	}
-
-	//WRITE TEST
-	printf("Guest trying to WRITE...\n");
-	if (check_permission(username, GUEST_W)) {
-		const char *m3 = "Guest: Access to WRITE files\n";
-		sys_puts(m3, strlen(m3));
-	} else {
-		const char *m4 = "Access denied for Guest to WRITE\n";
-		sys_puts(m4, strlen(m4));
-	}
-
-	//EXEC TEST
-	printf("Guest trying to EXECUTE...\n");
-	if (check_permission(username, GUEST_X)) {
-		//execl(exec_file, exec_file, NULL);
-		uint32_t elf_id = 4;
-    		uint32_t quota = 10;
-		sys_spawn(elf_id, quota);
-		const char *m5 = "Guest: Access to EXECUTE spawn\n";
-		sys_puts(m5, strlen(m5));
-	} else {
-		const char *m6 = "Access denied for Guest to EXECUTE spawn\n";
-		sys_puts(m6, strlen(m6));
-	}
-
-	//yield to user
+	//dokimi katagrafis
+	log_action("admin", "sys_hvm_run_vm", 1);
+	log_action("user1", "sys_disk_op", 1);
+	log_action("guest1", "sys_hvm_run_vm", 0);
+	
+	printf("[RBAC] Yielding CPU to next process...\n");
+		
 	while (1) {
-		yield();
+		yield(); //allagi diergasias
 	}
 
 	return 0;
 }
+
