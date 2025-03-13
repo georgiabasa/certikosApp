@@ -26,12 +26,12 @@ extern int log_index;
 
 //sunartiseis gia diaxeirisi xristwn
 int add_user(const char* username, int role);
-User* find_user(const char* username);
+extern User* find_user(const char* username);
 void print_users();
 
 //RBAC sunartiseis
-int can_execute(int role, const char* action);
-void log_action(const char* username, const char* action, int success);
+extern int can_execute(int role, const char* action);
+extern void log_action(const char* username, const char* action, int success);
 
 //system calls ektelesi
 void execute_syscalls(const char* username);
