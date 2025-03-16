@@ -1,39 +1,32 @@
 #ifndef RBAC_H
 #define RBAC_H
 
-#define ROLE_ADMIN 0
-#define ROLE_USER 1
-#define ROLE_GUEST 2
+#include <stdbool.h>
 
-#define LOG_SIZE 10
-#define MAX_USERS 10 //megistos arithmos xristwn
+typedef enum {
+	ROLE_ADMIN,
+	ROLE_USER,
+	ROLE_GUEST
+} Role;
 
-typedef struct User {
-	char username[16];
-	int role;
+typedef struct {
+	int pid;
+	Role role;
+} Process;
+
+typedef struct {
+	int uid;
+	char username[32];
+	char password[32];
+	Role role;
 } User;
 
-typedef struct LogEntry {
-	char username[16];
-	char action[16];
-	int success;
-} LogEntry;
-
-//dilwsi metavlitvn pou xrisimopoiountai se polla arxeia
-extern User user_list[MAX_USERS];
-extern LogEntry logs[LOG_SIZE];
-extern int log_index;
-
-//sunartiseis gia diaxeirisi xristwn
-int add_user(const char* username, int role);
-extern User* find_user(const char* username);
-void print_users();
-
-//RBAC sunartiseis
-extern int can_execute(int role, const char* action);
-extern void log_action(const char* username, const char* action, int success);
-
-//system calls ektelesi
-void execute_syscalls(const char* username);
+void init_rbac();
+bool check_permission(Role role, int action);
+void add_user(int uid, const char* username, const char* password, Role role);
+Role get_user_role(int uid);
+void remove_user(int uid);
+bool authenticate_user(const char* username, const char* password);
+void execute_process(int pid, int action);
 
 #endif //RBAC_H
