@@ -34,6 +34,9 @@ int main
 	print_users();
 
 	yield();
+	
+	print_users(); // uparxoun otan epistrepsei meta to yield akoma 
+		       // enw stis upoloipes diergasies poy pane apo to yield den uparxoun users eggegramenoi
 
 	return 0;
 }
