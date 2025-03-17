@@ -1,4 +1,4 @@
-#include "roles.h"
+#include "rbac.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -12,10 +12,13 @@
 #define ACTION_4 4
 #define ACTION_5 5
 
+#define true 1
+#define false 0
+
 bool rbac_matrix[3][NUM_ACTIONS] = {
-	{true, true, true, true, true},
-	{true, true, false, false, false},
-	{false, false, false, false, false}
+	{true, true, true, true, true}, //admin
+	{true, true, false, false, false}, //user
+	{false, false, false, false, false} //guest
 };
 
 User users[MAX_USERS];
@@ -31,9 +34,9 @@ void init_rbac() {
 	user_count = 0;
 }
 
-bool check_permissin(Role role, int action) {
-	if (action < 1 || action > NUM_ACTIONS) return false;
-	return rbac_matrix[role][action-1];
+int check_permission(Role role, int action) {
+	if (action < 1 || action > NUM_ACTIONS) return 0;
+	return rbac_matrix[role][action-1] ? 1 : 0;
 }
 
 void add_user(int uid, const char* username, const char* password, Role role) {
@@ -69,14 +72,14 @@ void remove_user(int uid) {
 	}
 }
 
-bool authenticate_user(const char* username, const char* password) {
+int authenticate_user(const char* username, const char* password) {
 	int i = 0;
 	for (i=0; i<user_count; i++) {
 		if (strcmp(users[i].username, username) == 0 && strcmp(users[i].password, password) == 0) {
-			return true;
+			return 1; //true
 		}
 	}
-	return false;
+	return 0; //false
 }
 
 void execute_process(int pid, int action) {

@@ -1,7 +1,12 @@
 #ifndef RBAC_H
 #define RBAC_H
 
-#include <stdbool.h>
+// Ορισμός ενεργειών (actions)
+#define ACTION_1 1
+#define ACTION_2 2
+#define ACTION_3 3
+#define ACTION_4 4
+#define ACTION_5 5
 
 typedef enum {
 	ROLE_ADMIN,
@@ -22,11 +27,11 @@ typedef struct {
 } User;
 
 void init_rbac();
-bool check_permission(Role role, int action);
+int check_permission(Role role, int action);
 void add_user(int uid, const char* username, const char* password, Role role);
 Role get_user_role(int uid);
 void remove_user(int uid);
-bool authenticate_user(const char* username, const char* password);
+int authenticate_user(const char* username, const char* password);
 void execute_process(int pid, int action);
 
 #endif //RBAC_H
