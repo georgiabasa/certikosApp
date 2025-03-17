@@ -7,9 +7,9 @@
 void process3() {
 	printf("Process3 (Guest) started.\n");
 
-	add_user(3, "guest", "guestpass", ROLE_GUEST);
+	//add_user(3, "guest", "guestpass", ROLE_GUEST);
 	
-	if (authenticate_user("guest", "guestpass")) {
+	if (authenticate_user("guest1", "guest1pass")) {
 		int action = ACTION_3;
 		execute_process(3, action);
 	} else {
@@ -19,6 +19,8 @@ void process3() {
 
 int main
 (int argc, char **argv) {
+
+	print_users();
 
 	process3();
 

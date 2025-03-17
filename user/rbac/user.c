@@ -7,9 +7,9 @@
 void process2() {
 	printf("Process2 (User) started.\n");
 	
-	add_user(2, "user", "userpass", ROLE_USER);
+	//add_user(2, "user", "userpass", ROLE_USER);
 
-	if (authenticate_user("user", "userpass")) {
+	if (authenticate_user("user2", "user2pass")) {
 		int action = ACTION_2;
 		execute_process(2, action);
 	} else {

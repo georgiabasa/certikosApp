@@ -15,30 +15,53 @@
 #define true 1
 #define false 0
 
+//matrix gia rbac - elegxow dikaiwmatwn gia kathe rolo
 bool rbac_matrix[3][NUM_ACTIONS] = {
 	{true, true, true, true, true}, //admin
 	{true, true, false, false, false}, //user
 	{false, false, false, false, false} //guest
 };
 
+//domi xristwn
 User users[MAX_USERS];
 int user_count = 0;
+
+ActionLog action_log_db[MAX_USERS * NUM_ACTIONS];
+int current_log_count = 0;
+
+//domi diergasiwn
 Process processes[NUM_PROCESSES] = {
 	{1, ROLE_ADMIN},
 	{2, ROLE_USER},
 	{3, ROLE_GUEST}
 };
 
+//sunartisi gia katagrafi energeiwn
+void log_action(const char *username, const char *action) {
+	if (current_log_count < MAX_USERS * NUM_ACTIONS) {
+		strcpy(action_log_db[current_log_count].username, username);
+		strcpy(action_log_db[current_log_count].action, action);
+
+		current_log_count++;
+		printf("Action logged: User '%s' performed action '%s'\n", username, action);
+	} else {
+		printf("Log database full, cannot record new action.\n");
+	}
+}
+
+//arxikopoiisi rbac sustimatos
 void init_rbac() {
 	printf("RBAC system initialized.\n");
 	user_count = 0;
 }
 
+//elegxos dikaiwmatwn gia mia energeia me vasi ton rolo
 int check_permission(Role role, int action) {
 	if (action < 1 || action > NUM_ACTIONS) return 0;
 	return rbac_matrix[role][action-1] ? 1 : 0;
 }
 
+//prosthiki xristi
 void add_user(int uid, const char* username, const char* password, Role role) {
 	if (user_count >= MAX_USERS) {
 		printf("User database full!\n");
@@ -51,6 +74,7 @@ void add_user(int uid, const char* username, const char* password, Role role) {
 	user_count++;
 }
 
+//epistrofi tou rolou tou xristi me vasi to uid
 Role get_user_role(int uid) {
 	int i = 0;
 	for (i=0; i<user_count; i++) {
@@ -61,6 +85,7 @@ Role get_user_role(int uid) {
 	return ROLE_GUEST;
 }
 
+//diagrafi xristi
 void remove_user(int uid) {
 	int i = 0;
 	for (i=0; i<user_count; i++) {
@@ -72,6 +97,7 @@ void remove_user(int uid) {
 	}
 }
 
+//afthentikopoiisi xristi
 int authenticate_user(const char* username, const char* password) {
 	int i = 0;
 	for (i=0; i<user_count; i++) {
@@ -82,6 +108,7 @@ int authenticate_user(const char* username, const char* password) {
 	return 0; //false
 }
 
+//ektelesi diadikasias an o xristis exei ta apaitoumena dikaiwmata
 void execute_process(int pid, int action) {
 	int i = 0;
 	for (i=0; i<NUM_PROCESSES; i++) {
@@ -96,15 +123,39 @@ void execute_process(int pid, int action) {
 	}
 }
 
+//ektupwsi olwn twn xristwn
+void print_users() {
+	if (user_count == 0) {
+		printf("No users in the system.\n");
+		return;
+	}
 
+	printf("Users in the system:\n");
+	int i = 0;
+	for (i=0; i<user_count; i++) {
+		printf("User ID: %d\n", users[i].uid);
+		printf("Username: %s\n", users[i].username);
+		printf("Role: ");
 
+		//ektupwsi rolou
+		switch (users[i].role) {
+			case ROLE_ADMIN:
+				printf("Admin\n");
+				break;
+			case ROLE_USER:
+				printf("User\n");
+				break;
+			case ROLE_GUEST:
+				printf("Guest\n");
+				break;
+			default:
+				printf("Unknown\n");
+				break;
+		}
 
-
-
-
-
-
-
+		printf("--------------------------------------------\n");
+	}
+}
 
 
 
