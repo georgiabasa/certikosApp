@@ -1,28 +1,32 @@
-// USER
+// Process 3
 
-#include <stdio.h>
-#include <syscall.h>
 #include "rbac.h"
+#include <syscall.h>
 
-void process2() {
-	printf("Process2 (User) started.\n");
-	
-	//add_user(2, "user", "userpass", ROLE_USER);
-
-	if (authenticate_user("user2", "user2pass")) {
-		int action = ACTION_2;
-		execute_process(2, action);
-	} else {
-		printf("Authentication failed for Process2.\n");
-	}
-}
 
 int main 
 (int argc, char **argv) {
 
-	process2();
+	unsigned int ret_val;
+	RbacMessage msg;
+	RbacMessage reply;
 
-	yield();
+	while(1) {
+		sys_recv(-1, (unsigned int)&msg, sizeof(msg), &ret_val);
+	
+		if (msg.type == MSG_ADD_USER) {
+			add_user(msg.user);
+			printf("RBAC_DB: Added user %s\n", msg.user.username);
+		} else if (msg.type == MSG_AUTH_USER) {
+			int auth = authenticate_user(msg.user);
+			User res = msg.user;
+			res.role = auth ? ROLE_USER : -1;
+			reply = (RbacMessage){MSG_AUTH_RESULT, res};
+			sys_send(ret_val, (unsigned int)&reply, sizeof(reply));
+		}
+
+		yield();
+	}
 
 	return 0;
 }

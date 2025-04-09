@@ -1,28 +1,26 @@
-// GUEST
+// Process 2
 
-#include <stdio.h>
-#include <syscall.h>
 #include "rbac.h"
-
-void process3() {
-	printf("Process3 (Guest) started.\n");
-
-	//add_user(3, "guest", "guestpass", ROLE_GUEST);
-	
-	if (authenticate_user("guest1", "guest1pass")) {
-		int action = ACTION_3;
-		execute_process(3, action);
-	} else {
-		printf("Authentication failed for Process3.\n");
-	}
-}
+#include <syscall.h>
 
 int main
 (int argc, char **argv) {
 
-	print_users();
+	User login = {"user1", "pass1", ROLE_USER};
+	RbacMessage msg = {MSG_AUTH_USER, login};
+	RbacMessage response;
+	unsigned int ret_val;
 
-	process3();
+	sys_send(3, (unsigned int)&msg, sizeof(msg));
+	sys_recv(3, unsigned int)&response, sizeof(response), &ret_val);
+
+	if (response.type == MSG_AUTH_RESULT) {
+		if (response.user.role == ROLE_USER) {
+			printf("Authentication SUCCESS for user %s\n", login.username);
+		} else {
+			printf("Authentication FAILED for user %s\n", login.username);
+		}
+	}
 
 	yield();
 
