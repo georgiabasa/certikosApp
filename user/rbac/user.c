@@ -1,5 +1,6 @@
 // Process 3
 
+#include <stdio.h>
 #include "rbac.h"
 #include <syscall.h>
 

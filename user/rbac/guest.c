@@ -1,5 +1,6 @@
 // Process 2
 
+#include <stdio.h>
 #include "rbac.h"
 #include <syscall.h>
 
@@ -12,7 +13,7 @@ int main
 	unsigned int ret_val;
 
 	sys_send(3, (unsigned int)&msg, sizeof(msg));
-	sys_recv(3, unsigned int)&response, sizeof(response), &ret_val);
+	sys_recv(3, (unsigned int)&response, sizeof(response), &ret_val);
 
 	if (response.type == MSG_AUTH_RESULT) {
 		if (response.user.role == ROLE_USER) {

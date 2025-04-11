@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "rbac.h"
 #include <string.h>
 

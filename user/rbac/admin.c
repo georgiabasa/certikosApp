@@ -1,5 +1,6 @@
 // process 1
 
+#include <stdio.h>
 #include "rbac.h"
 #include <syscall.h>
 
@@ -11,8 +12,8 @@ int main
 	RbacMessage msg1 = {MSG_ADD_USER, u1};
 	RbacMessage msg2 = {MSG_ADD_USER, u2};
 
-	sys_send(3, (unsigned_int)&msg1, sizeof(msg1));
-	sys_send(3, (unsigned_int)&msg2, sizeof(msg2));
+	sys_send(3, (unsigned int)&msg1, sizeof(msg1));
+	sys_send(3, (unsigned int)&msg2, sizeof(msg2));
 
 	printf("Admin sent users to RBAC_DB\n");
 	yield(); //manually yield to move to next process
