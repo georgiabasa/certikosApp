@@ -4,26 +4,28 @@
 #include "rbac.h"
 #include <syscall.h>
 
+static RbacMessage buffer __attribute__((aligned(4)));
+static RbacMessage reply __attribute__((aligned(4)));
+static unsigned int sender_pid;
 
 int main 
 (int argc, char **argv) {
 
-	unsigned int ret_val;
-	RbacMessage msg;
-	RbacMessage reply;
-
 	while(1) {
-		sys_recv(-1, (unsigned int)&msg, sizeof(msg), &ret_val);
+		sys_recv(3, (unsigned int)&buffer, sizeof(buffer), &sender_pid);
 	
-		if (msg.type == MSG_ADD_USER) {
-			add_user(msg.user);
-			printf("RBAC_DB: Added user %s\n", msg.user.username);
-		} else if (msg.type == MSG_AUTH_USER) {
-			int auth = authenticate_user(msg.user);
-			User res = msg.user;
-			res.role = auth ? ROLE_USER : -1;
-			reply = (RbacMessage){MSG_AUTH_RESULT, res};
-			sys_send(ret_val, (unsigned int)&reply, sizeof(reply));
+		if (buffer.type == MSG_ADD_USER) {
+			add_user(buffer.user);
+			printf("RBAC_DB: Added user %s\n", buffer.user.username);
+		} else if (buffer.type == MSG_AUTH_USER) {
+			int ok = authenticate_user(buffer.user);
+			User u = buffer.user;
+			u.role = ok ? ROLE_USER : -1;
+
+			reply.type = MSG_AUTH_RESULT;
+			reply.user = u;
+
+			sys_send(sender_pid, (unsigned int)&reply, sizeof(reply));
 		}
 
 		yield();

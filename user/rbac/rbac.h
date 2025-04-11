@@ -5,7 +5,10 @@
 #define MAX_NAME_LEN 16
 #define MAX_PASS_LEN 16
 
-typedef enum { ROLE_ADMIN, ROLE_USER } Role;
+typedef enum {
+	ROLE_ADMIN,
+	ROLE_USER
+} Role;
 
 typedef struct {
 	char username[MAX_NAME_LEN];

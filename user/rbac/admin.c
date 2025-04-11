@@ -4,16 +4,19 @@
 #include "rbac.h"
 #include <syscall.h>
 
+static RbacMessage msg1 __attribute__((aligned(4)));
+static RbacMessage msg2 __attribute__((aligned(4)));
+
 int main
 (int argc, char **argv) {
-	User u1 = {"user1", "pass1", ROLE_USER};
-	User u2 = {"admin1", "adminpass", ROLE_ADMIN};
+	msg1.type = MSG_ADD_USER;
+	msg1.user = (User){"user1", "pass1", ROLE_USER};
 
-	RbacMessage msg1 = {MSG_ADD_USER, u1};
-	RbacMessage msg2 = {MSG_ADD_USER, u2};
+	msg2.type = MSG_ADD_USER;
+	msg2.user = (User){"admin1", "adminpass", ROLE_ADMIN};
 
-	sys_send(3, (unsigned int)&msg1, sizeof(msg1));
-	sys_send(3, (unsigned int)&msg2, sizeof(msg2));
+	sys_send(5, (unsigned int)&msg1, sizeof(msg1));
+	sys_send(5, (unsigned int)&msg2, sizeof(msg2));
 
 	printf("Admin sent users to RBAC_DB\n");
 	yield(); //manually yield to move to next process
