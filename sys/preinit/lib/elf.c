@@ -176,18 +176,18 @@ elf_entry(void *exe_ptr)
 }
 
 extern uint8_t _binary___obj_user_idle_idle_start[];
-extern uint8_t _binary___obj_user_rbac_admin_start[];
-extern uint8_t _binary___obj_user_rbac_guest_start[];
-extern uint8_t _binary___obj_user_rbac_user_start[];
+extern uint8_t _binary___obj_user_rbac_p1_start[];
+extern uint8_t _binary___obj_user_rbac_p2_start[];
+extern uint8_t _binary___obj_user_rbac_p3_start[];
 extern uint8_t _binary___obj_user_vmm_vmm_start[];
 
 const uint8_t * binaries[] = {
 	_binary___obj_user_idle_idle_start,
 	_binary___obj_user_vmm_vmm_start,
 	_binary___obj_user_vmm_vmm_start,
-	_binary___obj_user_rbac_admin_start,
-	_binary___obj_user_rbac_guest_start,
-	_binary___obj_user_rbac_user_start,
+	_binary___obj_user_rbac_p1_start,
+	_binary___obj_user_rbac_p2_start,
+	_binary___obj_user_rbac_p3_start,
 };
 
 
@@ -197,9 +197,9 @@ const char * elf_names[] ={
 	TO_STRING(_binary___obj_user_idle_idle_start),
 	TO_STRING(_binary___obj_user_vmm_vmm_start),
 	TO_STRING(_binary___obj_user_vmm_vmm_start),
-	TO_STRING(_binary___obj_user_rbac_admin_start),
-	TO_STRING(_binary___obj_user_rbac_guest_start),
-	TO_STRING(_binary___obj_user_rbac_user_start),
+	TO_STRING(_binary___obj_user_rbac_p1_start),
+	TO_STRING(_binary___obj_user_rbac_p2_start),
+	TO_STRING(_binary___obj_user_rbac_p3_start),
 	TO_STRING(_binary___obj_user_hello_hello_start)
 };
 
@@ -226,25 +226,25 @@ __elf_load (void *exe_ptr, int pmap_id)
 
 	if (loaded[i] == 0 && pmap_id == i)
 	{
-		__elf_load__ (_binary___obj_user_rbac_admin_start, 4);
+		__elf_load__ (_binary___obj_user_rbac_p1_start, 4);
 		loaded[i] = 1;
-		KERN_DEBUG("Process admin loaded.\n");
+		KERN_DEBUG("Process_1 loaded.\n");
 	}
 	i++;
 
 	if (loaded[i] == 0 && pmap_id == i)
 	{
-		__elf_load__ (_binary___obj_user_rbac_guest_start, 5);
+		__elf_load__ (_binary___obj_user_rbac_p2_start, 5);
 		loaded[i] = 1;
-		KERN_DEBUG("Process guest loaded.\n");
+		KERN_DEBUG("Process_2 loaded.\n");
 	}
 	i++;
 
 	if (loaded[i] == 0 && pmap_id == i)
 	{
-		__elf_load__ (_binary___obj_user_rbac_user_start, 6);
+		__elf_load__ (_binary___obj_user_rbac_p3_start, 6);
 		loaded[i] = 1;
-		KERN_DEBUG("Process user loaded.\n");
+		KERN_DEBUG("Process_3 loaded.\n");
 	}
 	i++;
 	
@@ -259,16 +259,16 @@ elf_preload(void)
 	ELF_ENTRY_LOC[i] = elf_entry(_binary___obj_user_idle_idle_start);
 	i+= 3;
 	
-	ELF_LOC[i] = _binary___obj_user_rbac_admin_start;
-	ELF_ENTRY_LOC[i] = elf_entry(_binary___obj_user_rbac_admin_start);
+	ELF_LOC[i] = _binary___obj_user_rbac_p1_start;
+	ELF_ENTRY_LOC[i] = elf_entry(_binary___obj_user_rbac_p1_start);
 	i++;
 
-	ELF_LOC[i] = _binary___obj_user_rbac_guest_start;
-	ELF_ENTRY_LOC[i] = elf_entry(_binary___obj_user_rbac_guest_start);
+	ELF_LOC[i] = _binary___obj_user_rbac_p2_start;
+	ELF_ENTRY_LOC[i] = elf_entry(_binary___obj_user_rbac_p2_start);
 	i++;
 
-	ELF_LOC[i] = _binary___obj_user_rbac_user_start;
-	ELF_ENTRY_LOC[i] = elf_entry(_binary___obj_user_rbac_user_start);
+	ELF_LOC[i] = _binary___obj_user_rbac_p3_start;
+	ELF_ENTRY_LOC[i] = elf_entry(_binary___obj_user_rbac_p3_start);
 	i++;
 
 	KERN_INFO("elf table:\n");

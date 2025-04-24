@@ -54,26 +54,26 @@ main (int argc, char **argv)
 
 #ifdef CONFIG_APP_USER_PROC
 
-    pid_t admin_pid, user_pid, guest_pid;
-    unsigned int adminq = 100;
-    unsigned int userq = 50;
-    unsigned int guestq = 22;
+    pid_t p1_pid, p3_pid, p2_pid;
+    unsigned int p1q = 100;
+    unsigned int p3q = 50;
+    unsigned int p2q = 22;
     printf ("USER\n");
 
-    if ((admin_pid = spawn (3,adminq)) != NUM_PROC)
-      printf ("Admin in process %d with %d quota (including some pages reserved for kernel use only).\n", admin_pid, adminq);
+    if ((p1_pid = spawn (3,p1q)) != NUM_PROC)
+      printf ("Process_1 in process %d with %d quota (including some pages reserved for kernel use only).\n", p1_pid, p1q);
     else
-        printf ("Failed to launch admin.\n");
+        printf ("Failed to launch Process_1.\n");
 
-    if ((guest_pid = spawn (4,guestq)) != NUM_PROC)
-      printf ("Hacker in process %d with %d quota (including some pages reserved for kernel use only).\n", guest_pid, guestq);
+    if ((p2_pid = spawn (4,p2q)) != NUM_PROC)
+      printf ("Process_2 in process %d with %d quota (including some pages reserved for kernel use only).\n", p2_pid, p2q);
     else
-        printf ("Failed to launch guest.\n");
+        printf ("Failed to launch Process_2.\n");
 
-    if ((user_pid = spawn (5,userq)) != NUM_PROC)
-      printf ("User in process %d with %d quota (including some pages reserved for kernel use only).\n", user_pid, userq);
+    if ((p3_pid = spawn (5,p3q)) != NUM_PROC)
+      printf ("Process_3 in process %d with %d quota (including some pages reserved for kernel use only).\n", p3_pid, p3q);
     else
-        printf ("Failed to launch ding.\n");
+        printf ("Failed to launch Process_3.\n");
 
 #endif
 
