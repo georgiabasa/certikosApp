@@ -12,7 +12,7 @@ int main
 (int argc, char **argv) {
 
 	while(1) {
-		sys_recv(3, (unsigned int)&buffer, sizeof(buffer), &sender_pid);
+		sys_recv(4, (unsigned int)&buffer, sizeof(buffer), &sender_pid);
 	
 		if (buffer.type == MSG_ADD_USER) {
 			add_user(buffer.user);

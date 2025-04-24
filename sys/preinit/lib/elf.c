@@ -180,7 +180,6 @@ extern uint8_t _binary___obj_user_rbac_admin_start[];
 extern uint8_t _binary___obj_user_rbac_guest_start[];
 extern uint8_t _binary___obj_user_rbac_user_start[];
 extern uint8_t _binary___obj_user_vmm_vmm_start[];
-extern uint8_t _binary___obj_user_hello_hello_start[];
 
 const uint8_t * binaries[] = {
 	_binary___obj_user_idle_idle_start,
@@ -189,7 +188,6 @@ const uint8_t * binaries[] = {
 	_binary___obj_user_rbac_admin_start,
 	_binary___obj_user_rbac_guest_start,
 	_binary___obj_user_rbac_user_start,
-	_binary___obj_user_hello_hello_start
 };
 
 
@@ -250,12 +248,6 @@ __elf_load (void *exe_ptr, int pmap_id)
 	}
 	i++;
 	
-	if (loaded[i] == 0 && pmap_id == i)
-	{
-		__elf_load__ (_binary___obj_user_hello_hello_start, 9);
-		loaded[i] = 1;
-		KERN_DEBUG("Process Hello loaded.\n");
-	}
 }
 
 void
@@ -277,10 +269,6 @@ elf_preload(void)
 
 	ELF_LOC[i] = _binary___obj_user_rbac_user_start;
 	ELF_ENTRY_LOC[i] = elf_entry(_binary___obj_user_rbac_user_start);
-	i++;
-
-	ELF_LOC[i] = _binary___obj_user_hello_hello_start;
-	ELF_ENTRY_LOC[i] = elf_entry(_binary___obj_user_hello_hello_start);
 	i++;
 
 	KERN_INFO("elf table:\n");

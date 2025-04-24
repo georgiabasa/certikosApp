@@ -15,8 +15,8 @@ int main
 	msg2.type = MSG_ADD_USER;
 	msg2.user = (User){"admin1", "adminpass", ROLE_ADMIN};
 
-	sys_send(5, (unsigned int)&msg1, sizeof(msg1));
-	sys_send(5, (unsigned int)&msg2, sizeof(msg2));
+	sys_send(6, (unsigned int)&msg1, sizeof(msg1)); //RBAC server is PID3
+	sys_send(6, (unsigned int)&msg2, sizeof(msg2)); //secure: consistent channel
 
 	printf("Admin sent users to RBAC_DB\n");
 	yield(); //manually yield to move to next process

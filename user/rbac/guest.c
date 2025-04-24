@@ -13,8 +13,8 @@ int main
 	send_msg.type = MSG_AUTH_USER;
 	send_msg.user = (User){"user1", "pass1", ROLE_USER};
 
-	sys_send(6, (unsigned int)&send_msg, sizeof(send_msg));
-	sys_recv(6, (unsigned int)&recv_msg, sizeof(recv_msg), &from_pid);
+	sys_send(6, (unsigned int)&send_msg, sizeof(send_msg)); //send auth msg to server PID3
+	sys_recv(6, (unsigned int)&recv_msg, sizeof(recv_msg), &from_pid); // receive reply on your own PID securely
 
 	if (recv_msg.type == MSG_AUTH_RESULT) {
 		if (recv_msg.user.role == ROLE_USER) {

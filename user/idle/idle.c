@@ -54,11 +54,10 @@ main (int argc, char **argv)
 
 #ifdef CONFIG_APP_USER_PROC
 
-    pid_t admin_pid, user_pid, guest_pid, hello_pid;
+    pid_t admin_pid, user_pid, guest_pid;
     unsigned int adminq = 100;
     unsigned int userq = 50;
     unsigned int guestq = 22;
-    unsigned int helloq = 50;
     printf ("USER\n");
 
     if ((admin_pid = spawn (3,adminq)) != NUM_PROC)
@@ -75,11 +74,6 @@ main (int argc, char **argv)
       printf ("User in process %d with %d quota (including some pages reserved for kernel use only).\n", user_pid, userq);
     else
         printf ("Failed to launch ding.\n");
-
-    if ((hello_pid = spawn(8,helloq)) != NUM_PROC)
-      printf ("Hello in process %d with %d quota (including some pages reserved for kernel use only).\n", hello_pid, helloq);
-    else
-	printf ("Failed to launch hello.\n");
 
 #endif
 
