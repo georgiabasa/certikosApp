@@ -1,30 +1,25 @@
-// Process 2
+// Process 2 - User
 
 #include <stdio.h>
-#include "rbac.h"
 #include <syscall.h>
+#include "rbac.h"
 
-static RbacMessage send_msg __attribute__((aligned(4)));
-static RbacMessage recv_msg __attribute__((aligned(4)));
-static unsigned int from_pid;
+
+void user_process() {
+	printf("Process2 (User) started.\n");
+
+	if (authenticate_user("user2", "user2pass")) {
+		int action = ACTION_2;
+		execute_process(2, action);
+	} else {
+		printf("Authentication failed for Process2.\n");
+	}
+}
 
 int main
 (int argc, char **argv) {
-	send_msg.type = MSG_AUTH_USER;
-	send_msg.user = (User){"user1", "pass1", ROLE_USER};
-
-	sys_send(6, (unsigned int)&send_msg, sizeof(send_msg)); //send auth msg to server PID3
-	sys_recv(6, (unsigned int)&recv_msg, sizeof(recv_msg), &from_pid); // receive reply on your own PID securely
-
-	if (recv_msg.type == MSG_AUTH_RESULT) {
-		if (recv_msg.user.role == ROLE_USER) {
-			printf("Authentication SUCCESS for user %s\n", recv_msg.user.username);
-		} else {
-			printf("Authentication FAILED for user %s\n", send_msg.user.username);
-		}
-	}
-
+	
+	user_process();
 	yield();
-
 	return 0;
 }

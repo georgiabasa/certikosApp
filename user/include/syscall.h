@@ -118,7 +118,7 @@ sys_recv (unsigned int to, unsigned int recv_buf_vaddr, unsigned int rcount,
 	asm volatile("int %2"
 			: "=a" (errno),
 			"=b" (ret_val)
-			: "i" (T_SYS_SEND), /* secure: correct vector */
+			: "i" (T_CSYSCALL), /* secure: correct vector */
 			"a" (SYS_recv),
 			"b" (to),
 			"c" (recv_buf_vaddr),

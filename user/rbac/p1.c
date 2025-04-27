@@ -1,25 +1,38 @@
-// process 1
+// Process 1 - ADMIN
 
 #include <stdio.h>
-#include "rbac.h"
 #include <syscall.h>
+#include "rbac.h"
 
-static RbacMessage msg1 __attribute__((aligned(4)));
-static RbacMessage msg2 __attribute__((aligned(4)));
+
+void admin_process() {
+	printf("Process1 (Admin) started.\n");
+
+	add_user(1, "admin", "adminpass", ROLE_ADMIN);
+
+	if (authenticate_user("admin", "adminpass")) {
+		int action = ACTION_1;
+		execute_process(1, action);
+	} else {
+		printf("authentication failed for Process1\n");
+	}
+}
 
 int main
 (int argc, char **argv) {
-	msg1.type = MSG_ADD_USER;
-	msg1.user = (User){"user1", "pass1", ROLE_USER};
-
-	msg2.type = MSG_ADD_USER;
-	msg2.user = (User){"admin1", "adminpass", ROLE_ADMIN};
-
-	sys_send(6, (unsigned int)&msg1, sizeof(msg1)); //RBAC server is PID3
-	sys_send(6, (unsigned int)&msg2, sizeof(msg2)); //secure: consistent channel
-
-	printf("Admin sent users to RBAC_DB\n");
-	yield(); //manually yield to move to next process
 	
+	init_rbac();
+
+	add_user(1, "admin", "adminpass", ROLE_ADMIN);
+	add_user(2, "user1", "user1pass", ROLE_USER);
+ 	add_user(3, "user2", "user2pass", ROLE_USER);
+ 	add_user(4, "guest1", "guest1pass", ROLE_GUEST);
+ 	add_user(5, "guest2", "guest2pass", ROLE_GUEST);
+
+	admin_process();
+
+	print_users();
+
+	yield();
 	return 0;
 }

@@ -1,34 +1,49 @@
 #ifndef RBAC_H
 #define RBAC_H
 
-#define MAX_USERS 10
-#define MAX_NAME_LEN 16
-#define MAX_PASS_LEN 16
+// Ορισμός ενεργειών (actions)
+#define ACTION_1 1
+#define ACTION_2 2
+#define ACTION_3 3
+#define ACTION_4 4
+#define ACTION_5 5
 
+// orismos rolwn
 typedef enum {
 	ROLE_ADMIN,
-	ROLE_USER
+	ROLE_USER,
+	ROLE_GUEST
 } Role;
 
+//orismos tis domis gia tous xristes
 typedef struct {
-	char username[MAX_NAME_LEN];
-	char password[MAX_PASS_LEN];
+	int uid;
+	char username[32];
+	char password[32];
 	Role role;
 } User;
 
-typedef enum {
-	MSG_ADD_USER,
-	MSG_AUTH_USER,
-	MSG_AUTH_RESULT
-} MsgType;
-
+//orismos energeias
 typedef struct {
-	MsgType type;
-	User user;
-} RbacMessage;
+	int pid;
+	Role role;
+} Process;
 
-void add_user(User user); //for P3 internal DB
-int authenticate_user(User user); //for P3 internal DB
-void print_users(); //for debug/log
+//orismos dois gia tis katagrafes energeiwn
+typedef struct {
+	char username[50];
+	char action[50];
+} ActionLog;
+
+
+void log_action(const char *username, const char *action);
+void init_rbac();
+int check_permission(Role role, int action);
+void add_user(int uid, const char* username, const char* password, Role role);
+Role get_user_role(int uid);
+void remove_user(int uid);
+int authenticate_user(const char* username, const char* password);
+void execute_process(int pid, int action);
+void print_users();
 
 #endif //RBAC_H
