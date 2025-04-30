@@ -1,49 +1,21 @@
 #ifndef RBAC_H
 #define RBAC_H
 
-// Ορισμός ενεργειών (actions)
-#define ACTION_1 1
-#define ACTION_2 2
-#define ACTION_3 3
-#define ACTION_4 4
-#define ACTION_5 5
+#define ROLE_NONE	0
+#define ROLE_ADMIN	1
+#define ROLE_USER	2
+#define ROLE_VIEWER	3
 
-// orismos rolwn
-typedef enum {
-	ROLE_ADMIN,
-	ROLE_USER,
-	ROLE_GUEST
-} Role;
+#define ACTION_READ	0
+#define ACTION_WRITE	1
+#define ACTION_MANAGE	2
 
-//orismos tis domis gia tous xristes
-typedef struct {
-	int uid;
-	char username[32];
-	char password[32];
-	Role role;
-} User;
+int get_role(int pid);
+void set_role(int manager_pid, int target_pid, int role); //only admin can set
+int check_permission(int pid, int action);
 
-//orismos energeias
-typedef struct {
-	int pid;
-	Role role;
-} Process;
-
-//orismos dois gia tis katagrafes energeiwn
-typedef struct {
-	char username[50];
-	char action[50];
-} ActionLog;
-
-
-void log_action(const char *username, const char *action);
-void init_rbac();
-int check_permission(Role role, int action);
-void add_user(int uid, const char* username, const char* password, Role role);
-Role get_user_role(int uid);
-void remove_user(int uid);
-int authenticate_user(const char* username, const char* password);
-void execute_process(int pid, int action);
-void print_users();
+int secure_read(int pid, int *value);
+int secure_write(int pid, int value);
+void show_roles(int pid);
 
 #endif //RBAC_H

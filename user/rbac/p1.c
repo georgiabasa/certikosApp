@@ -1,38 +1,31 @@
 // Process 1 - ADMIN
 
-#include <stdio.h>
 #include <syscall.h>
 #include "rbac.h"
+#include <stdio.h>
 
+#define MY_PID 0
 
-void admin_process() {
-	printf("Process1 (Admin) started.\n");
-
-	add_user(1, "admin", "adminpass", ROLE_ADMIN);
-
-	if (authenticate_user("admin", "adminpass")) {
-		int action = ACTION_1;
-		execute_process(1, action);
-	} else {
-		printf("authentication failed for Process1\n");
-	}
-}
-
-int main
-(int argc, char **argv) {
+int main(int argc, char **argv) {
+	int pid = MY_PID;
 	
-	init_rbac();
+	printf("[ADMIN] Managing system...\n");
+	show_roles(pid);
 
-	add_user(1, "admin", "adminpass", ROLE_ADMIN);
-	add_user(2, "user1", "user1pass", ROLE_USER);
- 	add_user(3, "user2", "user2pass", ROLE_USER);
- 	add_user(4, "guest1", "guest1pass", ROLE_GUEST);
- 	add_user(5, "guest2", "guest2pass", ROLE_GUEST);
+	int val;
+	if (secure_read(pid, &val) == 0)
+		printf("[ADMIN] Resource is: %d\n", val);
 
-	admin_process();
+	printf("[ADMIN] Changing resource to 999...\n");
+	secure_write(pid, 999);
 
-	print_users();
+	if (secure_read(pid, &val) == 0)
+		printf("[ADMIN] Resource is: %d\n", val);
 
-	yield();
+	printf("[ADMIN] Revoking USER (PID 1)...\n");
+	set_role(pid, 1, ROLE_NONE);
+
+	yield(); //to proc2
+
 	return 0;
 }

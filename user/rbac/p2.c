@@ -1,25 +1,27 @@
 // Process 2 - User
 
-#include <stdio.h>
 #include <syscall.h>
 #include "rbac.h"
+#include <stdio.h>
 
+#define MY_PID 1
 
-void user_process() {
-	printf("Process2 (User) started.\n");
+int main(int argc, char **argv) {
+	int pid = MY_PID;
+	int val;
 
-	if (authenticate_user("user2", "user2pass")) {
-		int action = ACTION_2;
-		execute_process(2, action);
-	} else {
-		printf("Authentication failed for Process2.\n");
-	}
-}
+	if (secure_read(pid, &val) == 0)
+		printf("[USER] Read resource: %d\n", val);
+	else
+		printf("[USER] Read denied.\n");
 
-int main
-(int argc, char **argv) {
+	printf("[USER] Trying to write 555...\n");
+	if (secure_write(pid, 555) == 0)
+		printf("[USER] Wrote 555.\n");
+	else
+		printf("[USER[ Write denied.\n");
+
+	yield();  // to proc3
 	
-	user_process();
-	yield();
 	return 0;
 }

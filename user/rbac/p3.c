@@ -1,25 +1,27 @@
-// Process 3 - Guest
+// Process 3 - Viewer
 
-#include <stdio.h>
 #include <syscall.h>
 #include "rbac.h"
+#include <stdio.h>
 
-void guest_process() {
-	printf("Process3 (Guest) started\n");
+#define MY_PID 2
 
-	if (authenticate_user("guest1", "guest1pass")) {
-		int action = ACTION_3;
-		execute_process(3, action);
-	} else {
-		printf ("Authentication failed for Process3.\n");
-	}
-}
+int main(int argc, char **argv) {
+	int pid = MY_PID;
+	int val;
 
-int main
-(int argc, char **argv) {
+	if (secure_read(pid, &val) == 0)
+		printf("[VIEWER] Resource value: %d\n", val);
+	else
+		printf("[VIEWER] Read denied.\n");
 
-	print_users();
-	guest_process();
-	yield();
+	printf("[VIEWER] Tryind to write 123 (should fail)...\n");
+	if (secure_write(pid, 123) == 0)
+		printf("[VIEWER] Unexpectedly succeeded in writing!\n");
+	else
+		printf("[VIEWER] Correctly denied write access.\n");
+
+	yield();  //back to admin
+
 	return 0;
 }
