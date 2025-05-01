@@ -3,11 +3,27 @@
 #include <syscall.h>
 #include "rbac.h"
 #include <stdio.h>
+#include <sysenter.h>
 
 #define MY_PID 0
 
 int main(int argc, char **argv) {
 	int pid = MY_PID;
+
+	printf("trying to syssend\n");
+	static unsigned int msg[2];
+	msg[0] = 123;
+	msg[1] = 456;
+	uint32_t receiver_chid = 2;
+
+	int ret = fast_sys_ssend(receiver_chid, msg, 2);
+	if (ret < 0) {
+		printf("Sender [4]: fast_sys_ssend failed: %d\n", ret);
+	} else {
+		printf("Sender [4]: message sent [%u, %u]\n", msg[0], msg[1]);
+	}
+	fast_sys_yield();
+	
 	
 	printf("[ADMIN] Managing system...\n");
 	show_roles(pid);
