@@ -53,8 +53,9 @@ int main(int argc, char **argv) {
 	int action_counter = 0;
 	int inside_counter = 0;
 	int data[10] = {9, 7, 5, 3, 2, 8, 1, 4, 6, 10}; //example data for sorting
+	int loop = 15;
 
-	while(1) {
+	do {
 		action_counter++;
 		if (action_counter % 3 == 0) {
 			printf("DELAY>>>>>>>\n");
@@ -65,8 +66,11 @@ int main(int argc, char **argv) {
 		} else {
 			sorting_task(data, 10); //trigger sorting task every other cycle
 		}
+		loop--;
 		yield(); //yield to next process
-	}
+	} while (loop > 0);
+
+	return 0;
 }
 
 //In this code, execute_action() performs different tasks based on the action_id — either performing a simple calculation or simulating data processing. These tasks represent real work being done, instead of just printing messages.
