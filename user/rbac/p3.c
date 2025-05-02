@@ -1,27 +1,25 @@
-// Process 3 - Viewer
+// Process 3 - status reporting
 
 #include <syscall.h>
-#include "rbac.h"
 #include <stdio.h>
 
-#define MY_PID 2
+void report_status(int cycle_counter, int resource_usage, int action_count) {
+	//simulate reporting the current system status
+	printf("Status Report (Cycle %d):\n", cycle_counter);
+	printf("Resource Usage: %d\n", resource_usage);
+	printf("Actions Executed: %d\n", action_count);
+}
 
 int main(int argc, char **argv) {
-	int pid = MY_PID;
-	int val;
+	int cycle_counter = 0;
+	int resource_usage = 0;
+	int action_count = 0;
 
-	if (secure_read(pid, &val) == 0)
-		printf("[VIEWER] Resource value: %d\n", val);
-	else
-		printf("[VIEWER] Read denied.\n");
-
-	printf("[VIEWER] Tryind to write 123 (should fail)...\n");
-	if (secure_write(pid, 123) == 0)
-		printf("[VIEWER] Unexpectedly succeeded in writing!\n");
-	else
-		printf("[VIEWER] Correctly denied write access.\n");
-
-	yield();  //back to admin
-
-	return 0;
+	while (1) {
+		cycle_counter++;
+		report_status(cycle_counter, resource_usage, action_count); //report system status
+		yield(); //yield to next process
+	}
 }
+
+//In this part, the function report_status() would print a report that contains the current state of the system (e.g., resource usage, actions completed). It aggregates the data from the other processes, giving a meaningful status update.

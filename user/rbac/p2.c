@@ -1,41 +1,38 @@
-// Process 2 - User
+// Process 2 - action execution
 
 #include <syscall.h>
-#include "rbac.h"
 #include <stdio.h>
-#include <sysenter.h>
 
-#define MY_PID 1
+void execute_action(int action_id) {
+	//simulate an action based on the action_id
+	switch(action_id) {
+		case 1:
+			printf("Executing action 1: Performing a calculation...\n");
+			int result = 5*5; //simulate a calculation
+			printf("Result of calculation: %d\n", result);
+			break;
+		case 2:
+			printf("Executing action 2: Processing data...\n");
+			//simulate data processing (could be an array or something simple
+			int i = 0;
+			for (i = 0; i < 5; i++) {
+				printf("Processing data index %d\n", i);
+			}
+			break;
+		default:
+			printf("Unkown action\n");
+			break;
+	}
+}
 
 int main(int argc, char **argv) {
+	int action_counter = 0;
 
-	unsigned int recv_buf[2];
-	uint32_t sender_pid = 1;
-
-	int ret = fast_sys_srecv(sender_pid, recv_buf, 2);
-	if (ret < 0) {
-		printf ("Receiver [5]: fast_sys_srecv failed: %d\n", ret);
-	} else {
-		printf ("Receiver [5]: received message [%u, %u]\n", recv_buf[0], recv_buf[1]);
+	while(1) {
+		action_counter++;
+		execute_action(action_counter % 2 + 1); //cycle between action 1 and 2
+		yield(); //yield to next process
 	}
-
-	fast_sys_yield();
-
-	int pid = MY_PID;
-	int val;
-
-	if (secure_read(pid, &val) == 0)
-		printf("[USER] Read resource: %d\n", val);
-	else
-		printf("[USER] Read denied.\n");
-
-	printf("[USER] Trying to write 555...\n");
-	if (secure_write(pid, 555) == 0)
-		printf("[USER] Wrote 555.\n");
-	else
-		printf("[USER[ Write denied.\n");
-
-	yield();  // to proc3
-	
-	return 0;
 }
+
+//In this code, execute_action() performs different tasks based on the action_id — either performing a simple calculation or simulating data processing. These tasks represent real work being done, instead of just printing messages.
