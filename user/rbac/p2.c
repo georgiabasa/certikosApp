@@ -3,6 +3,14 @@
 #include <syscall.h>
 #include <stdio.h>
 
+void simulate_delay(int delay_cycles) {
+	int i = 0;
+	for (i = 0; i < delay_cycles; i++) {
+		yield(); //yield to next process
+	}
+	printf("Action completed after %d cycles of delay.\n", delay_cycles);
+}
+
 void sorting_task(int *data, int length) {
 	//simple Bubble Sort for demostration
 	int i = 0;
@@ -48,7 +56,10 @@ int main(int argc, char **argv) {
 
 	while(1) {
 		action_counter++;
-		if (action_counter % 2 == 0) {
+		if (action_counter % 3 == 0) {
+			printf("DELAY>>>>>>>\n");
+			simulate_delay(5); //simulate a delay for every 3rd action
+		} else if (action_counter % 2 == 0) {
 			inside_counter++;
 			execute_action(inside_counter % 2 + 1); //regular action like processing data
 		} else {
