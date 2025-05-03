@@ -13,7 +13,7 @@ static int tick = 0;
 
 int main (int argc, char **argv) {
 	//int resource_counter = 0;
-	int loop = 15;
+	int loop = 50;
 
 	do {
 		printf("\n");

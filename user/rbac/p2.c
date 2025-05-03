@@ -37,11 +37,16 @@ void simulate_encoding() {
 	}
 }
 
-void checksum_calculation() {
+void checksum_calculation(int simulated_error_trigger) {
 	printf("[P2] Action: Checksum verification...\n");
 	int checksum = 0;
 	int i = 0;
 	for (i = 0; i <= 5; i++) checksum ^= i;
+
+	if (simulated_error_trigger % 6 == 0) {
+		checksum +=1; //injected error
+		printf("!! Simulated Checksum Error Injected !!\n");
+	}
 	printf("Checksum: %d\n", checksum);
 }
 
@@ -53,11 +58,11 @@ void data_filtering() {
 		if (values[i] > 30) printf("Allowed: %d\n", values[i]);
 }
 
-void execute_action(int action_id) {
+void execute_action(int action_id, int simulated_error_trigger) {
 	//simulate an action based on the action_id
 	switch(action_id) {
 		case 1:
-			checksum_calculation();
+			checksum_calculation(simulated_error_trigger);
 			break;
 		case 2:
 			simulate_encoding();
@@ -75,16 +80,19 @@ int main(int argc, char **argv) {
 	int action_counter = 0;
 	int inside_counter = 0;
 	int data[10] = {9, 7, 5, 3, 2, 8, 1, 4, 6, 10}; //example data for sorting
-	int loop = 15;
+	int loop = 50;
+	static int simulated_error_trigger = 0;
 
 	do {
 		action_counter++;
-		if (action_counter % 4 == 0) {
+		simulated_error_trigger++;
+
+		if (action_counter % 13 == 0) {
 			printf("DELAY>>>>>>>\n");
-			simulate_delay(5); //simulate a delay for every 4 actions
+			simulate_delay(5); //simulate a delay for every 13 actions
 		} else if (action_counter % 2 == 0) {
 			inside_counter++;
-			execute_action(inside_counter % 3 + 1); //regular action like processing data
+			execute_action(inside_counter % 3 + 1, simulated_error_trigger); //regular action like processing data
 		} else {
 			sorting_task(data, 10); //trigger sorting task every other cycle
 		}
