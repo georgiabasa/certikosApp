@@ -125,3 +125,12 @@ int main(int argc, char **argv) {
 //4. Critical task prioritization (ATTITUDE_ADJ, THERMAL_CTRL, etc.) — skips IDLE, COMMS_CHECK, etc., if time is tight.
 //5. Internal memory only (no shared memory, fits CertiKOS model).
 
+//REAL SUBSYSTEM MAPPING
+//Task		Subsystem		Notes
+//-------------------------------------------------------
+//NAV_UPDATE	Guidance/Nav		Critical path
+//ATTITUDE_ADJ	Attitude Control	Life-critical
+//THERMAL_CTRL	Thermal Mgmt		Protects systems
+//PAYLOAD_TX	Comm subsystem		Opportunistic
+//COMMS_CHECK	Telemetry check		Maintenance
+//IDLE		NOP			Skippable
