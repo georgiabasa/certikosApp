@@ -1,4 +1,4 @@
-//P1 - Temperature and Voltage Sampler
+//P1 - Simulated environmental readings
 
 #include <syscall.h>
 #include <stdio.h>
@@ -8,23 +8,23 @@ int main (int argc, char **argv) {
 	int loop = 50;
 
 	while (loop--) {
+		printf("\n");
 		tick++;
-		int temp = 20 + (tick % 10); //simulated temperature
-		int voltage = 330 + ((tick * 3) % 100); //mV
 
-		printf("LOG|P1|Tick:%d|Temp:%dC|V:%dmV\n", tick, temp, voltage);
+		int temp = 20 + (tick % 15); //simulated temperature in C
+		int radiation = (tick * 7) % 120; //radiation mSv
+		int battery_mv = 3700 - (tick % 50); //battery in mV
+
+		printf("LOG|P1|Tick:%d|Temp:%dC|Rad:%dmSv|Bat:%dmV\n", tick, temp, radiation, battery_mv);
+
 		yield();
 	}
 
 	return 0;
 }
 
- //P1: Sensor Environment Sampler
+// P1 — Environmental Health Sampler
 
-//    Collects simulated data from fixed virtual sensors.
+//  Reads and logs sensor data: temperature, radiation, battery voltage.
 
-  //  Just logs readings periodically.
-
-    //No communication needed.
-
-   // ❓ Why? In real embedded systems, environmental data is sometimes just logged for later retrieval.
+//  Purpose: Monitors spacecraft health, even in degraded mode.

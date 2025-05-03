@@ -1,4 +1,4 @@
-// P2 - System Watchdoging (independent timer)
+// P2 - Simulated system activity logger
 
 #include <syscall.h>
 #include <stdio.h>
@@ -9,17 +9,23 @@ int main(int argc, char **argv) {
 
 	while (loop--) {
 		tick++;
+
 		if (tick % 5 == 0) {
-			printf("LOG|P2|Tick:%d|WATCHDOG OK\n", tick);
+			printf("LOG|P2|Tick:%d|Task:COMMS|Status:OK\n", tick);
+		} else if (tick % 3 == 0) {
+			printf("LOG|P2|Tick:%d|Task:NAV_CTRL|Status:COMPLETE\n", tick);
+		} else {
+			printf("LOG|P2|Tick:%d|Task:IDLE_OP|CPU_LOAD:%d%%\n", tick, (tick * 11) % 90);
 		}
+
 		yield();
 	}
 
 	return 0;
 }
 
-// Purely counts time spent in execution.
+// P2 — Task Activity Logger (Execution Verifier)
 
-// Can simulate a heartbeat or watchdog.
+// Logs deterministic simulation of task outcomes: communication checks, navigation control, etc.
 
-//  Why? This would exist in a drone to restart the system if something freezes — no need to talk to others.
+// Purpose: Mimics logic of activity execution and error detection.
