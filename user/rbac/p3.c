@@ -6,7 +6,7 @@
 
 int main(int argc, char **argv) {
 	int tick = 0;
-	int loop = COMMAND_CYCLE_LEN;
+	int loop = DIAG_CONSTANTS_LEN;
 
 	while (loop--) {
 		int diag_index = tick % 10;
