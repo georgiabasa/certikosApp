@@ -4,6 +4,7 @@
 #define COMMAND_TABLE_H
 
 #define COMMAND_CYCLE_LEN 60
+#define MAX_TASKS 5
 
 typedef struct {
 	int tick;
@@ -18,7 +19,7 @@ static const CommandEntry command_table[COMMAND_CYCLE_LEN] = {
     	{2,  "PAYLOAD_TX", "FAIL", 501},
     	{3,  "THERMAL_CTRL", "OK", 210},
     	{4,  "ATTITUDE_ADJ", "OK", 202},
-    	{5,  "IDLE", "OK", 100},
+	{5,  "IDLE", "OK", 100},
     	{6,  "IDLE", "OK", 100},
     	{7,  "PAYLOAD_TX", "OK", 200},
     	{8,  "NAV_UPDATE", "FAIL", 503},
@@ -40,7 +41,7 @@ static const CommandEntry command_table[COMMAND_CYCLE_LEN] = {
     	{24,  "ATTITUDE_ADJ", "OK", 202},
     	{25,  "IDLE", "OK", 100},
     	{26,  "IDLE", "OK", 100},
-    	{27,  "PAYLOAD_TX", "OK", 200},
+	{27,  "PAYLOAD_TX", "OK", 200},
     	{28,  "NAV_UPDATE", "FAIL", 503},
     	{29,  "IDLE", "OK", 100},
 	{30, "COMMS_CHECK", "OK", 200},
@@ -48,7 +49,7 @@ static const CommandEntry command_table[COMMAND_CYCLE_LEN] = {
     	{32,  "PAYLOAD_TX", "FAIL", 501},
     	{33,  "THERMAL_CTRL", "OK", 210},
     	{34,  "ATTITUDE_ADJ", "OK", 202},
-    	{35,  "IDLE", "OK", 100},
+	{35,  "IDLE", "OK", 100},
     	{36,  "IDLE", "OK", 100},
     	{37,  "PAYLOAD_TX", "OK", 200},
     	{38,  "NAV_UPDATE", "FAIL", 503},
@@ -73,6 +74,38 @@ static const CommandEntry command_table[COMMAND_CYCLE_LEN] = {
     	{57,  "PAYLOAD_TX", "OK", 200},
     	{58,  "NAV_UPDATE", "FAIL", 503},
     	{59,  "IDLE", "OK", 100}
+};
+
+typedef enum {
+	INIT,
+	WAIT,
+	EXEC,
+	COMPLETE,
+	FAILED
+} TaskState;
+
+typedef struct {
+	const char* name;
+	int duration; //simulated duration in ticks
+	int critical; //1=critical, 0=non-critical
+} TaskMeta;
+
+typedef struct {
+	const char* task;
+	TaskState state;
+	int retries;
+	int time_left;
+	int last_tick;
+	const char* result; //OK, FAIL, RETRY_FAIL
+} RuntimeTask;
+
+static const TaskMeta task_meta[] = {
+	{"NAV_UPDATE", 3, 1},
+	{"ATTITUDE_ADJ", 2, 1},
+	{"THERMAL_CTRL", 2, 1},
+	{"PAYLOAD_TX", 2, 0},
+	{"COMMS_CHECK", 1, 0},
+	{"IDLE", 1, 0}
 };
 
 #endif
