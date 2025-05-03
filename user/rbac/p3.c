@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
 	int loop = DIAG_CONSTANTS_LEN;
 
 	while (loop--) {
-		int diag_index = tick % DIAG_CONSTANTS_LEN;
+		int diag_index = tick % 10;
         	int pattern = diag_test_patterns[diag_index];
         	int score = (pattern * (tick + 1)) % 100;
 		int passed = (score <= error_threshold);
@@ -71,8 +71,16 @@ int main(int argc, char **argv) {
 	return 0;
 }
 
-// P3 — Self-Diagnostic & Error Cycler
 
-// Performs periodic self-diagnostics and state analysis.
+//1. Rolling Health Log – last 5 DIAG scores in a circular buffer.
+//2. Degradation Detection – triggers if 5-score average falls below a threshold.
+//3. Pattern Signature detection – detects alternating pass/fail = "Flickering Detected".
+//4. Timing Anomaly Check – compares expected vs actual pattern every 10 ticks.
 
-// Purpose: Detect latent faults and report audit metrics.
+//mapping subsystem - p3 diagnostics
+//Function			Real Subsystem				Notes
+//------------------------------------------------------------------------------------------------------
+//DIAG tests			Platform self-check logic		Software BIST
+//Rolling log & trend checks	Onboard diagnostics core		Spacecraft health management
+//Flickering detection		HW stability unit			Detects marginal/flaky hardware
+//Timing check			Timer sync or clock drift		Checks real-time behavior
