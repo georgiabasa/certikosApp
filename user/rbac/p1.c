@@ -2,21 +2,23 @@
 
 #include <syscall.h>
 #include <stdio.h>
+#include "sensor_data.h"
 
 int main (int argc, char **argv) {
 	int tick = 0;
-	int loop = 50;
+	int loop = SENSOR_DATA_LEN;
 
 	while (loop--) {
 		printf("\n");
+
+
+		int temp = temperature_data[tick];
+		int rad = radiation_data[tick]; //radiation mSv
+		int bat = battery_mv_data[tick]; //battery in mV
+
+		printf("microSAT|P1|Tick:%d|TEMP:%dC|RAD:%dmSv|BAT:%dmV\n", tick, temp, rad, bat);
+
 		tick++;
-
-		int temp = 20 + (tick % 15); //simulated temperature in C
-		int radiation = (tick * 7) % 120; //radiation mSv
-		int battery_mv = 3700 - (tick % 50); //battery in mV
-
-		printf("LOG|P1|Tick:%d|Temp:%dC|Rad:%dmSv|Bat:%dmV\n", tick, temp, radiation, battery_mv);
-
 		yield();
 	}
 

@@ -2,31 +2,24 @@
 
 #include <syscall.h>
 #include <stdio.h>
-
-int run_selftest(int tick) {
-	//dummy pass/fail logic
-	return ((tick * 17) % 100) < 85; //85 pass rate
-}
+#include "diag_constants.h"
 
 int main(int argc, char **argv) {
 	int tick = 0;
-	int loop = 50;
+	int loop = COMMAND_CYCLE_LEN;
 
 	while (loop--) {
+		int diag_index = tick % 10;
+        	int pattern = diag_test_patterns[diag_index];
+        	int score = (pattern * (tick + 1)) % 100;
+
+        	if (score > error_threshold) {
+            		printf("µSAT|P3|Tick:%d|DIAG_FAIL|Score:%d\n", tick, score);
+        	} else {
+            		printf("µSAT|P3|Tick:%d|DIAG_PASS|Score:%d\n", tick, score);
+        	}
+
 		tick++;
-
-		if (tick % 10 == 0) {
-			int passed = run_selftest(tick);
-			if (passed) {
-				printf("microSAT|P3|Tick:%d|SelfTest:PASS\n", tick);
-			} else {
-				printf("microSAT|P3|Tick:%d|SelfTest:FAIL|Code:%d\n", tick, (tick * 13) % 256);
-			}
-		} else {
-			int sync_code = (tick ^ 0x3F) & 0xFF;
-			printf("microSAT|P3|Tick:%d|Heartbeat|Code:%d\n", tick, sync_code);
-		}
-
 		yield();
 	}
 	

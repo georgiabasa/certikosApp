@@ -2,22 +2,17 @@
 
 #include <syscall.h>
 #include <stdio.h>
+#include "command_table.h"
 
 int main(int argc, char **argv) {
 	int tick = 0;
-	int loop = 50;
+	int loop = COMMAND_CYCLE_LEN;
 
 	while (loop--) {
+		CommandEntry entry = command_table[tick % 10]; // wrap around for demo
+        	printf("µSAT|P2|Tick:%d|Task:%s|Status:%s|Code:%d\n", tick, entry.task, entry.status, entry.code);
+
 		tick++;
-
-		if (tick % 5 == 0) {
-			printf("LOG|P2|Tick:%d|Task:COMMS|Status:OK\n", tick);
-		} else if (tick % 3 == 0) {
-			printf("LOG|P2|Tick:%d|Task:NAV_CTRL|Status:COMPLETE\n", tick);
-		} else {
-			printf("LOG|P2|Tick:%d|Task:IDLE_OP|CPU_LOAD:%d%%\n", tick, (tick * 11) % 90);
-		}
-
 		yield();
 	}
 
