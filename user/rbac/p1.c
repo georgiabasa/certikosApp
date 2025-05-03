@@ -110,3 +110,9 @@ int main (int argc, char **argv) {
 //4. Derived Metric: A “Health Index” based on radiation and battery.
 //5. Smart logging per cycle.
 
+//MAPPING TO REAL SUBSYSTEMS
+//TEMP: Onboard thermal control system
+//RAD: Space weather monitor / radiation dosimeter
+//BAT: EPS (Electrical Power Subsystem) monitoring
+//Health Index: Simplified decision-making metric for autonomous behavior
+
