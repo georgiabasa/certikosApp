@@ -1,36 +1,30 @@
-// Process 1 - resource monitoring
+//P1 - Temperature and Voltage Sampler
 
 #include <syscall.h>
 #include <stdio.h>
 
-void monitor_resource(int *resource_counter) {
-	//simulate resource consumption by incrementing a counter
-	(*resource_counter)++;
-	printf("Resource monitoring: System resource usage is now %d\n", *resource_counter);
-}
-
-static int tick = 0;
-
 int main (int argc, char **argv) {
-	//int resource_counter = 0;
+	int tick = 0;
 	int loop = 50;
 
-	do {
-		printf("\n");
+	while (loop--) {
 		tick++;
-		int fake_cpu = tick %100;
-		int fake_mem = (tick * 3) %256;
+		int temp = 20 + (tick % 10); //simulated temperature
+		int voltage = 330 + ((tick * 3) % 100); //mV
 
-		printf("[P1] CPU Load: %d%%\n", fake_cpu);
-		printf("[P1] Memory Usage: %dMB\n", fake_mem);
-
-		loop--;
-		yield(); //yield to next process
-	} while (loop > 0);
+		printf("LOG|P1|Tick:%d|Temp:%dC|V:%dmV\n", tick, temp, voltage);
+		yield();
+	}
 
 	return 0;
 }
 
-//This function simply increments a counter, simulating an increase in resource usage (e.g., CPU or memory usage). Each time monitor_resource() is called, it simulates checking or consuming resources.
+ //P1: Sensor Environment Sampler
 
-//P1 acts like a privileged daemon/service monitoring system health (e.g., top, systemd metrics).
+//    Collects simulated data from fixed virtual sensors.
+
+  //  Just logs readings periodically.
+
+    //No communication needed.
+
+   // ❓ Why? In real embedded systems, environmental data is sometimes just logged for later retrieval.
