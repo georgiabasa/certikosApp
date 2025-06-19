@@ -13,11 +13,11 @@ USER_LDFLAGS	:= $(LDFLAGS) -m elf_i386 -Ttext=0x40000000 -e _start
 include $(USER_DIR)/lib/Makefile.inc
 include $(USER_DIR)/idle/Makefile.inc
 include $(USER_DIR)/vmm/Makefile.inc
-include $(USER_DIR)/rbac/Makefile.inc
+include $(USER_DIR)/myapplication/Makefile.inc
 include $(USER_DIR)/profile/Makefile.inc
 
 
-user: lib #idle vmm rbac profile
+user: lib #idle vmm myapplication profile
 	@echo All targets of user are done.
 
 install_user:
