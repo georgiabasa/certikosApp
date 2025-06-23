@@ -1,3 +1,25 @@
+1.Download and run the official mCertiKOS VirtualBox image (used in PLDI 2016) - PLDI16AE_Ubuntu15.04_x86_64.ovf
+
+2.Inside the VM, you will find:
+home/certikos/workspace/certikos/kernel/
+
+3.Replace this “kernel/” folder with the contents of the GitHub repo:
+cd workspace/certikos
+mv kernel kernel-backup	(optional: back up original)
+git clone https://github.com/georgiabasa/certikosApp.git kernel
+
+4.All necessary files, scripts and application logic are now in place
+
+5.Clean and build kernel and user-level processes:
+sudo make clean
+sudo ./make.sh	(password: a)
+
+6.Run the system:
+sudo ./run.sh
+
+
+
+_________________________________________________________________________________________________________________________________
 sudo apt-get install libc6-dev-i386
 
 
