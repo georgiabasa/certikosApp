@@ -1,4 +1,5 @@
 1.Download and run the official mCertiKOS VirtualBox image (used in PLDI 2016) - PLDI16AE_Ubuntu15.04_x86_64.ovf
+dowload link: https://flint.cs.yale.edu/flint/publications/pldi16-security/PLDI16AE_Ubuntu15.04_x86_64.ova
 
 2.Inside the VM, you will find:
 home/certikos/workspace/certikos/kernel/
